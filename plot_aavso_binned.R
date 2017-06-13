@@ -63,7 +63,8 @@ plotMee <- NA # do not highlight any particular observer code
 #plotMee <- "LDJ"
 #plotMee <- "DUBF"
 #plotMee <- "ELYA"
-plotMee <- "CPP"
+#plotMee <- "CPP"
+plotMee <- "OAR"
 meeColor <- "darkviolet"
 ########
 allBands <- data.frame(bandinQ=c("I","R","V","B"),plotColor=c("darkviolet","red","green","blue"), stringsAsFactors=FALSE)
@@ -322,8 +323,7 @@ for (thisBand in allBands$bandinQ) {
 
 if (!is.na(plotMee)) {
 	imSpecial <- grep(plotMee,binCurve$Observer_Code,ignore.case=TRUE)
-	special.time <- binCurve$JD[imSpecial] -tmin
-	points(special.time,binCurve$Magnitude[imSpecial],col=meeColor,pch=20,cex=1.5)
+	points(myTimes[imSpecial],binCurve$Magnitude[imSpecial],col=meeColor,pch=20,cex=1.5)
 }
 
 grid(col="black")
