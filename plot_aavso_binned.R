@@ -21,17 +21,17 @@ allFits <- list()
 
 ##################
 # input parameters
-llightcurve_name <- "aavso_13Jun2017.csv"
-maxairmass <- 1.5 # air mass values above this will be filtered out, as well as missing air masses. Set >= 100 to turn this off
+llightcurve_name <- "aavso_15Jun2017.csv"
+maxairmass <- 1.8 # air mass values above this will be filtered out, as well as missing air masses. Set >= 100 to turn this off
 maxuncertainty <- 0.02  # maximum AAVSO uncertainty estimate
-maxBinUncertainty <- 0.1 # worst standard deviation to accept for a binned set of observations
+maxBinUncertainty <- 0.05 # worst standard deviation to accept for a binned set of observations
 wildsd <- 6.0 # worst number of standard deviations from mean allowed
 
 earliestJD = 2457294 # only data on or after this JD will be used
 #earliestJD <- 2457700
 #earliestJD <- 2457800
 startPlot <- earliestJD
-#startPlot <- 2457800
+startPlot <- 2457800
 plotRelTimes <- TRUE
 ##########
 includeExclude <- FALSE # TRUE if your list of observer codes is to to be included, FALSE if excluded or not used
@@ -48,30 +48,34 @@ ExclCodes <- "None"
 #ExclCodes <- c("ATE") # observers to be used/not used in the fit. set to an invalid code (.e.g "None") if not interested
 #ExclCodes <- c("JM","LDJ","ELYA","DKS","OJJ","OAR","ATE","BPAD","HJW")
 #ExclCodes <- c("LDJ","UJHA","DKS","OJJ","JM","DUBF","ELYA","HJW")
-#ExclCodes <- c("JM","LDJ","OAR","LPB")
+#ExclCodes <- c("JM","LDJ","OAR","LPB","DUBF","ELYA","DKS","OJJ","BSM","SDB","SWIA","VBPA","OAS","WROC")	 # B and V ensemble
 #ExclCodes <- c("DUBF","OAR","LDJ","LPB","ELYA","LBG","OJJ","JM","SGEA")
 #ExclCodes <- c("DUBF","DKS","ELYA","OAR","ATE","HJW","BPAD","OJJ","LBG","LDJ","UJHA","OYE","GFRB","OAS","MJB","EEY") # V ensemble
 #ExclCodes <- c("DUBF","GKA","BPAD","LPB","SJAR","LBG","LDJ","LWHA") # R ensemble
 #ExclCodes <- c("OAR","OJJ","GKA","MJB","SJAR","LWHA","LBG","LPB","LDJ","CMP") # I ensemble
 #ExclCodes <- c("ELYA","DUBF","OAR","HJW","DKS","LBG","UJHA","JM")
 #ExclCodes <- "DUBF"
-ExclCodes <- "BJFB"
+#ExclCodes <- c("BJFB","HJW")
 ########
 plotMee <- NA # do not highlight any particular observer code
 #plotMee <- "HJW" # observer code to plot with special character
 #plotMee <- "JM"
-#plotMee <- "LDJ"
+#plotMee <- "JM"
 #plotMee <- "DUBF"
 #plotMee <- "ELYA"
 #plotMee <- "CPP"
-plotMee <- "OAR"
+#plotMee <- "OAR"
+#plotMee <- "MJB"
+#plotMee <- "WROC"
+#plotMee <- "GKA"
+plotMee <- "MJB"
 meeColor <- "darkviolet"
 ########
 allBands <- data.frame(bandinQ=c("I","R","V","B"),plotColor=c("darkviolet","red","green","blue"), stringsAsFactors=FALSE)
 allBands <- data.frame(bandinQ=c("V"),plotColor=c("darkgreen"), stringsAsFactors=FALSE)
-#allBands <- data.frame(bandinQ=c("V","B"),plotColor=c("green","blue"), stringsAsFactors=FALSE)
-allBands <- data.frame(bandinQ=c("B"),plotColor=c("blue"), stringsAsFactors=FALSE)
-#allBands <- data.frame(bandinQ=c("I"),plotColor=c("darkviolet"), stringsAsFactors=FALSE)
+allBands <- data.frame(bandinQ=c("V","B"),plotColor=c("green","blue"), stringsAsFactors=FALSE)
+#allBands <- data.frame(bandinQ=c("B"),plotColor=c("blue"), stringsAsFactors=FALSE)
+allBands <- data.frame(bandinQ=c("I"),plotColor=c("darkviolet"), stringsAsFactors=FALSE)
 #allBands <- data.frame(bandinQ=c("R"),plotColor=c("red"), stringsAsFactors=FALSE)
 #allBands <- data.frame(bandinQ=c("I","R","B"),plotColor=c("darkviolet","red","blue"), stringsAsFactors=FALSE)
 
@@ -93,11 +97,11 @@ lqsColor <- "darkgreen"
 weightedBins <- FALSE # set to TRUE to weight lower uncertainty bins more.
 
 ####### MARS
-marsOrder <- 20
+marsOrder <- 24
 marsPenalty <- 2 # set to 0 to avoid penalizing knots in pruning pass
 marsPMethod <- "none" # set to "none" to avoid pruning
 marsPMethod <- "backward" # set to "none" to avoid pruning
-splineRaw <-  FALSE # do the spline on the raw lightcuve, not binned.
+splineRaw <-  FALSE # do the spline on the raw lightcurve, not binned.
 ##############################
 okComparison <- "(000-?BLS-?556)|(000-?BLS-?551)|(000-?BLS-?553)|000-?BLS-?552)|(000-?BLS-?554)|(000-?BLS-?549)|(000-?BLS-?555)|(108)|(113)|(116)|(118)|(121)|(124)|(128)|(ENSEMBLE)|(APASS20062365[+-]442738)" # regular expression from AAVSO photometry table
 
@@ -108,9 +112,9 @@ tabbysLoc <- c("+44d 27m 24.61s","20h 06m 15.457s") # right ascension and declin
 missingAirmass <- "JM"	# observer code
 ### option to draw a vertical date line
 drawDateLine <-  TRUE
-jdLine <- 2457892.0
+jdLine <- c(2457892.0, 2457917.5)
 jdLineColor <- "red"
-jdLineText <- "18May17"
+jdLineText <- c("18May17","11Jun17")
 ##########################################################################
 
 if (includeExclude) {
@@ -328,10 +332,13 @@ if (!is.na(plotMee)) {
 
 grid(col="black")
 
+##### draw vertical lines at various dates
 if(drawDateLine) {
 	# draw a vertical line for a date of interest
-	lines(x=c(jdLine,jdLine),y=myYlims,col=jdLineColor,lwd=1,lty="dashed")
-	text(x= jdLine,y=myYlims[2],labels=jdLineText,pos=3,cex=0.5)
+	for(jd.index in 1:length(jdLine)) {
+		lines(x=c(jdLine[jd.index],jdLine[jd.index]),y=myYlims,col=jdLineColor,lwd=1,lty="dashed")
+		text(x= jdLine,y=myYlims[2],labels=jdLineText[jd.index],pos=3,cex=0.5)
+	}
 }
 
 
