@@ -1,6 +1,6 @@
 ##################
 # input parameters for binning and plotting AAVSO data
-llightcurve_name <- "aavso_16Jun2017.csv"
+llightcurve_name <- "aavso_latest_data.csv"
 maxairmass <- 1.9 # air mass values above this will be filtered out, as well as missing air masses. Set >= 100 to turn this off
 maxuncertainty <- 0.02  # maximum AAVSO uncertainty estimate
 maxBinUncertainty <- 0.05 # worst standard deviation to accept for a binned set of observations
@@ -38,7 +38,7 @@ ExclCodes <- c("JM","LDJ","OAR","LPB","DUBF","ELYA","DKS","OJJ","BSM","SDB","SWI
 ########
 plotMee <- NA # do not highlight any particular observer code
 #plotMee <- "HJW" # observer code to plot with special character
-#plotMee <- "JM"
+plotMee <- "JM"
 #plotMee <- "JM"
 #plotMee <- "DUBF"
 #plotMee <- "ELYA"
@@ -47,13 +47,13 @@ plotMee <- NA # do not highlight any particular observer code
 #plotMee <- "MJB"
 #plotMee <- "WROC"
 #plotMee <- "GKA"
-plotMee <- "MJB"
+#plotMee <- "MJB"
 meeColor <- "darkviolet"
 ########
 allBands <- data.frame(bandinQ=c("I","R","V","B"),plotColor=c("darkviolet","red","green","blue"), stringsAsFactors=FALSE)
-allBands <- data.frame(bandinQ=c("V"),plotColor=c("darkgreen"), stringsAsFactors=FALSE)
-allBands <- data.frame(bandinQ=c("V","B"),plotColor=c("green","blue"), stringsAsFactors=FALSE)
-#allBands <- data.frame(bandinQ=c("B"),plotColor=c("blue"), stringsAsFactors=FALSE)
+#allBands <- data.frame(bandinQ=c("V"),plotColor=c("darkgreen"), stringsAsFactors=FALSE)
+#allBands <- data.frame(bandinQ=c("V","B"),plotColor=c("green","blue"), stringsAsFactors=FALSE)
+allBands <- data.frame(bandinQ=c("B"),plotColor=c("blue"), stringsAsFactors=FALSE)
 #allBands <- data.frame(bandinQ=c("I"),plotColor=c("darkviolet"), stringsAsFactors=FALSE)
 #allBands <- data.frame(bandinQ=c("R"),plotColor=c("red"), stringsAsFactors=FALSE)
 #allBands <- data.frame(bandinQ=c("I","R","B"),plotColor=c("darkviolet","red","blue"), stringsAsFactors=FALSE)
@@ -64,7 +64,7 @@ deltaJD <- 1.0 # bin width in days
 plotExcluded <- FALSE # set to TRUE to plot the points in the lightcurve not used in the fit.
 plotQuadratic <- FALSE # set to TRUE to plot a quadratic fit
 generateTS <- TRUE # set to TRUE to creat a time series from the data
-tsBinWidth <- 6.0 # time series bin width in days. Important if generateTS is TRUE
+tsBinWidth <- 10.0 # time series bin width in days. Important if generateTS is TRUE
 smoothTS <- TRUE # set to TRUE to smooth the times series
 tsSmoothOrder <- 10 # the order for the moving average to smooth the time series
 tryLQS <- FALSE # set to TRUE is you want to try resistant regression.
@@ -76,10 +76,10 @@ lqsColor <- "darkgreen"
 weightedBins <- FALSE # set to TRUE to weight lower uncertainty bins more.
 
 ####### MARS
-marsOrder <- 24
-marsPenalty <- 2 # set to 0 to avoid penalizing knots in pruning pass
+marsOrder <- 15
+marsPenalty <- 0 # set to 0 to avoid penalizing knots in pruning pass
 marsPMethod <- "none" # set to "none" to avoid pruning
-marsPMethod <- "backward" # set to "none" to avoid pruning
+#marsPMethod <- "backward" # set to "none" to avoid pruning
 splineRaw <-  FALSE # do the spline on the raw lightcurve, not binned.
 ##############################
 okComparison <- "(000-?BLS-?556)|(000-?BLS-?551)|(000-?BLS-?553)|000-?BLS-?552)|(000-?BLS-?554)|(000-?BLS-?549)|(000-?BLS-?555)|(108)|(113)|(116)|(118)|(121)|(124)|(128)|(ENSEMBLE)|(APASS20062365[+-]442738)" # regular expression from AAVSO photometry table
