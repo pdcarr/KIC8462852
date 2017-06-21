@@ -21,7 +21,7 @@ allFits <- list()
 
 ##################
 
-
+# all the inputs are in the sourced file
 source("aavso_bin_input_parameters.R")
 
 if (includeExclude) {
@@ -31,19 +31,19 @@ if (includeExclude) {
 }
 
 # load light curve
-lightcurve <- read.csv(file=llightcurve_name,header=TRUE,check.names=TRUE)
+#col.classes = c("numeric","numeric","NULL","character","character","NULL","character","character","character","character","numeric","numeric","character","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL")
+
+lightcurve <- read.csv(file=llightcurve_name,header=TRUE,check.names=TRUE,na.strings="NA")
 
 # lightcurve, which is the AAVSO data read in via read.csv with header=TRUE
 totalRec = length(lightcurve$JD)
 cat("\n\nTotal records read from file: ",totalRec,"\n\n")
 
-#  myPlotTitle:  string for plot title
-
-
 # make a list of every record with a Magnitude reported
 goodMags <- !is.na(lightcurve$Magnitude)
 
 # replace missing airmass for JM
+cat("replacing missing airmass...\n")
 jmtest = lightcurve$Observer_Code == missingAirmass & is.na(lightcurve$Airmass)
 lightcurve$Airmass[jmtest] <- AirMass(lightcurve$JD[jmtest],lasCruces, tabbysLoc)
 
@@ -54,14 +54,17 @@ allFits <- list()
 allQFits <- list()
 allResistFit <- list()
 tmin <- head(lightcurve$JD,n=1)
-
+cat("earliest time in file: ",tmin,"\n")
 index = 1
 
 # edit specific observers over time range(s) and specific passband
+cat("editing specific observers\n")
 editCurve <- ObserverJDEdit(editUser,lightcurve)
 
 #clean and separate and the bands in question
+
 for (thisBand in allBands$bandinQ) {
+	cat("cleaning ",thisBand,"\n")
 #	print(thisBand)	
 #	print(index)
 	# clean the data for this passband
@@ -70,6 +73,7 @@ for (thisBand in allBands$bandinQ) {
 }
 	
 	#bin the data for each Observer
+cat("binning the data\n")
 binCurve <- binAAVSO	(lightcurve,cleanBand,allBands,deltaJD)
 
 # test for less than max uncertainty
@@ -78,7 +82,7 @@ uncertaintyTest <- binCurve$Uncertainty <= maxBinUncertainty
 index = 1
 
 # loop over the passbands and do regression for each one
-
+cat("fitting the data \n")
 for (thisBand in allBands$bandinQ) {
 	# fold in test for passband
 	btest <- (binCurve$Band == thisBand) & uncertaintyTest
@@ -156,12 +160,12 @@ myxlims = c(startPlot,max(binCurve$JD,na.rm=TRUE))
 myYlims = c(ceiling(max(binCurve$Magnitude[uncertaintyTest],na.rm=TRUE)*10)/10,floor(10*min(binCurve$Magnitude[uncertaintyTest],na.rm=TRUE))/10) # set up Y limits for reversed Y axis
 
 # set up plot title text
-ocodesInTitle <- paste("Observer",head(ExclCodes,n=3),inclWord,sep=" ")
 howManyObs = length(unique(binCurve$Observer_Code[uncertaintyTest]))
-if (length(ExclCodes) > 3){ocodesInTitle <- c(ocodesInTitle,paste("and",howManyObs - 3,"more observer code(s)",sep=" "))}
+#ocodesInTitle <- paste("Observer",head(ExclCodes,n=3),inclWord,sep=" ")
+#if (length(ExclCodes) > 3){ocodesInTitle <- c(ocodesInTitle,paste("and",howManyObs - 3,"more observer code(s)",sep=" "))}
 
 myBands = paste(allBands$bandinQ,collapse=" ")
-titleString <- c(paste("AAVSO",myBands,"Data with",deltaJD,"Day Bins",sep=" "), ocodesInTitle)
+titleString <- c(paste("AAVSO",myBands,"Data with",deltaJD,"Day Bins",sep=" "), paste(as.character(howManyObs),"Observers",sep=" "))
 myPlotTitle <- paste(titleString,collapse="\n")
 
 
@@ -283,7 +287,7 @@ if (generateTS) {
 }
 
 # plot the residuals if desired:
-if (plotResiduals) {
+if (plotResiduals & !splineRaw) {
 	quartz("Residuals")
 	irow <- 1
 	
