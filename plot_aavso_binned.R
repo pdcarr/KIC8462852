@@ -44,8 +44,10 @@ goodMags <- !is.na(lightcurve$Magnitude)
 
 # replace missing airmass for JM
 cat("replacing missing airmass...\n")
-jmtest = lightcurve$Observer_Code == missingAirmass & is.na(lightcurve$Airmass)
-lightcurve$Airmass[jmtest] <- AirMass(lightcurve$JD[jmtest],lasCruces, tabbysLoc)
+for (index in 1:length(missingAirmass)){
+        jmtest = lightcurve$Observer_Code == missingAirmass[index] & is.na(lightcurve$Airmass)
+        lightcurve$Airmass[jmtest] <- AirMass(lightcurve$JD[jmtest],missingAMLocs[index,], tabbysLoc)
+}
 
 # loop over the desired bands
 numBands = length(allBands$bandinQ)
