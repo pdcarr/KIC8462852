@@ -1,7 +1,7 @@
 ##################
 # input parameters for binning and plotting AAVSO data
 llightcurve_name <- "aavso_latest_data.csv"
-maxairmass <- 1.9 # air mass values above this will be filtered out, as well as missing air masses. Set >= 100 to turn this off
+maxairmass <- 2.0 # air mass values above this will be filtered out, as well as missing air masses. Set >= 100 to turn this off
 maxuncertainty <- 0.029  # maximum AAVSO uncertainty estimate
 maxBinUncertainty <- 0.1 # worst standard deviation to accept for a binned set of observations
 wildsd <- 10.0 # worst number of standard deviations from mean allowed
@@ -9,7 +9,7 @@ wildsd <- 10.0 # worst number of standard deviations from mean allowed
 earliestJD = 2457294 # only data on or after this JD will be used
 #earliestJD <- 2457700
 startPlot <- earliestJD
-startPlot <- 2457880
+#startPlot <- 2457880
 plotRelTimes <- TRUE
 ##########
 includeExclude <- TRUE # TRUE if your list of observer codes is to to be included, FALSE if excluded or not used
@@ -25,8 +25,8 @@ ExclCodes <- "None"
 #ExclCodes <- c("ATE","OJJ") # observers to be used/not used in the fit. set to an invalid code (.e.g "None") if not interested
 #ExclCodes <- c("ATE") # observers to be used/not used in the fit. set to an invalid code (.e.g "None") if not interested
 #ExclCodes <- c("JM","LDJ","ELYA","DKS","OJJ","OAR","ATE","BPAD","HJW")
-#ExclCodes <- c("LDJ","UJHA","DKS","OJJ","JM","DUBF","ELYA","HJW")
-ExclCodes <- c("JM","UJHA","LDJ","OAR","LPB","DUBF","ELYA","DKS","OJJ","BSM","SDB","SWIA","VBPA","OAS","MJB","PXR")	 # B and V ensemble
+ExclCodes <- c("LDJ","DUBF","HJW","PXR","DKS","OJJ")
+#ExclCodes <- c("JM","LDJ","OAR","LPB","DUBF","ELYA","DKS","OJJ","BSM","SDB","SWIA","VBPA","OAS","MJB","PXR","MATA","JSJA","UJHA")	 # B and V ensemble
 #ExclCodes <- c("JM","LDJ","OAR","LPB","DUBF","ELYA","DKS","OJJ","BSM","SDB","SWIA","VBPA","OAS","MJB")	 # B and V ensemble
 #ExclCodes <- c("DUBF","OAR","LDJ","LPB","ELYA","LBG","OJJ","JM","SGEA")
 #ExclCodes <- c("DUBF","DKS","ELYA","OAR","ATE","HJW","BPAD","OJJ","LBG","LDJ","UJHA","OYE","GFRB","OAS","MJB","EEY") # V ensemble
@@ -40,14 +40,14 @@ plotMee <- NA # do not highlight any particular observer code
 #plotMee <- "HJW" # observer code to plot with special character
 #plotMee <- "PXR"
 #plotMee <- "HJW"
-#plotMee <- "DUBF"
+plotMee <- "OJJ"
 #plotMee <- "ELYA"
 #plotMee <- "CPP"
 #plotMee <- "OAR"
 #plotMee <- "MJB"
 #plotMee <- "WROC"
 #plotMee <- "GKA"
-plotMee <- "JM"
+#plotMee <- "UJHA"
 meeColor <- "darkviolet"
 ########
 allBands <- data.frame(bandinQ=c("I","R","V","B"),plotColor=c("darkviolet","red","green","blue"), stringsAsFactors=FALSE)
@@ -76,21 +76,25 @@ lqsColor <- "darkgreen"
 weightedBins <- FALSE # set to TRUE to weight lower uncertainty bins more.
 
 ####### MARS
-marsOrder <- 21
+marsOrder <- 15
 marsPenalty <- 2 # set to 0 to avoid penalizing knots in pruning pass
 marsPMethod <- "none" # set to "none" to avoid pruning
 marsPMethod <- "backward" # set to "none" to avoid pruning
-splineRaw <-  TRUE # do the spline on the raw lightcurve, not binned.
-##############################
-okComparison <- "(000-?BLS-?556)|(000-?BLS-?551)|(000-?BLS-?553)|(000-?BLS-?552)|(000-?BLS-?554)|(000-?BLS-?549)|(000-?BLS-?555)|(108)|(113)|(116)|(118)|(121)|(124)|(128)|(ENSEMBLE)|(APASS20062365[+-]442738)" # regular expression from AAVSO photometry table
+splineRaw <-  FALSE # do the spline on the raw lightcurve, not binned.
+############################## Comparison Stars
+okComparison <- "(000-?BLS-?556)|(000-?BLS-?551)|(000-?BLS-?553)|(000-?BLS-?552)|(000-?BLS-?554)|(000-?BLS-?549)|(BLS-549)|(BLS-555)|(000-?BLS-?555)|(108)|(113)|(116)|(118)|(121)|(124)|(128)|(ENSEMBLE)|(APASS20062365[+-]442738)" # regular expression from AAVSO photometry table
 
+######## removing obvious wild points user by user
 editUser <- data.frame(obsCode= "UJHA",startJD=2457650,endJD=2457760,band="V",stringsAsFactors=FALSE)
+editUser <- rbind(editUser,c("PXR",2457512,2457513,"V"),c("JSJA",2457646,2457647,"V"),c("SGEA",2457879,2457880,"V"))
 # fill in some missing airmass values
 lasCruces <- c(32.31994,-106.763654) # center of Las Cruces, NM in decimal degrees latitude, longitude.
 Leominster <- c(52.226529,-2.741) # approximate location of PXR
+Warrington <- c(53.39,-2.59695) # approx. location of JSJA
+Erd <- c(47.39,18.90454) # approx. location of MATA
 tabbysLoc <- c("+44d 27m 24.61s","20h 06m 15.457s") # right ascension and declination of the star.
-missingAirmass <- c("JM","PXR")	# observer code
-missingAMLocs = rbind(lasCruces,Leominster)
+missingAirmass <- c("JM","PXR","JSJA","MATA")	# observer code
+missingAMLocs = rbind(lasCruces,Leominster,Warrington,Erd)
 ### option to draw a vertical date line
 drawDateLine <-  TRUE
 jdLine <- c(2457892.0, 2457917.5)
