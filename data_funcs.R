@@ -576,10 +576,14 @@ ObserverJDEdit <- function(editFrame,lightcurve) {
 
 	keepThis <- !is.na(lightcurve$Observer_Code)
 	
-	for (index in length(editFrame$obsCode)) {
+	for (index in 1:length(editFrame$obsCode)) {
+#		print(index)
+#		print(editFrame$obsCode[index])
 		killThis <- lightcurve$Observer_Code == editFrame$obsCode[index]
 		killThis <- killThis & (lightcurve$JD >= editFrame$startJD[index] & lightcurve$JD <= editFrame$endJD[index])
-		killThis <- killThis & (lightcurve$Band == editFrame$band[index])
+#		print(editFrame$startJD[index])
+#		print( editFrame$startJD[index])
+		killThis <- killThis & (lightcurve$Band ==  editFrame$startJD[index])
 		keepThis <- keepThis & !killThis
 	}
 
