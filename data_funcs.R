@@ -430,9 +430,12 @@ binAAVSO <-  function(lightcurve,cleanObs,allBand,deltaJD) {
 	}
 
 	#calculate the start and stop times from the llight curve Julian Dates 
+	
 	startJD = floor(min(lightcurve[allClean,"JD"],na.rm=TRUE))
 	stopJD = ceiling(max(lightcurve[allClean,"JD"],na.rm=TRUE))
-	
+#	print(length(lightcurve$JD[allClean]))
+#	print(startJD)
+#	print(stopJD)
 	weare = unique(lightcurve[allClean,"Observer_Code"]) # a list of all the observer codes
 	numBands = length(allBand$bandinQ) # the number of passbands
 	
@@ -575,8 +578,8 @@ ObserverJDEdit <- function(editFrame,lightcurve) {
 	
 	for (index in length(editFrame$obsCode)) {
 		killThis <- lightcurve$Observer_Code == editFrame$obsCode[index]
-		killThis <- killThis & (lightcurve$JD >= editFrame$startJD & lightcurve$JD <= editFrame$endJD)
-		killThis <- killThis & (lightcurve$Band == editFrame$band)
+		killThis <- killThis & (lightcurve$JD >= editFrame$startJD[index] & lightcurve$JD <= editFrame$endJD[index])
+		killThis <- killThis & (lightcurve$Band == editFrame$band[index])
 		keepThis <- keepThis & !killThis
 	}
 
