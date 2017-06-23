@@ -575,17 +575,18 @@ ObserverJDEdit <- function(editFrame,lightcurve) {
 # marks with FALSE all entries from an AAVSO light curve or binned curve that correspond to a particular observer, band and time range
 
 	keepThis <- !is.na(lightcurve$Observer_Code)
+	killThese <- is.na(lightcurve$JD)
 	
 	for (index in 1:length(editFrame$obsCode)) {
 #		print(index)
-#		print(editFrame$obsCode[index])
+		print(editFrame$obsCode[index])
 		killThis <- lightcurve$Observer_Code == editFrame$obsCode[index]
 		killThis <- killThis & (lightcurve$JD >= editFrame$startJD[index] & lightcurve$JD <= editFrame$endJD[index])
 #		print(editFrame$startJD[index])
-#		print( editFrame$startJD[index])
-		killThis <- killThis & (lightcurve$Band ==  editFrame$startJD[index])
-		keepThis <- keepThis & !killThis
+		killThis <- killThis & (lightcurve$Band ==  editFrame$band[index])
+		killThese <- killThese | killThis
 	}
+	keepThis <- keepThis & !killThese
 
 	return (keepThis)
 }
