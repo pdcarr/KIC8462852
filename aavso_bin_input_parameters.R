@@ -25,7 +25,7 @@ ExclCodes <- "None"
 #ExclCodes <- c("ATE","OJJ") # observers to be used/not used in the fit. set to an invalid code (.e.g "None") if not interested
 #ExclCodes <- c("ATE") # observers to be used/not used in the fit. set to an invalid code (.e.g "None") if not interested
 #ExclCodes <- c("JM","LDJ","ELYA","DKS","OJJ","OAR","ATE","BPAD","HJW")
-ExclCodes <- c("LDJ","DUBF","HJW","PXR","DKS","OJJ")
+ExclCodes <- c("LDJ","DUBF","HJW","PXR","DKS","OJJ","HBB","SDB")
 #ExclCodes <- c("JM","LDJ","OAR","LPB","DUBF","ELYA","DKS","OJJ","BSM","SDB","SWIA","VBPA","OAS","MJB","PXR","MATA","JSJA","UJHA")	 # B and V ensemble
 #ExclCodes <- c("JM","LDJ","OAR","LPB","DUBF","ELYA","DKS","OJJ","BSM","SDB","SWIA","VBPA","OAS","MJB")	 # B and V ensemble
 #ExclCodes <- c("DUBF","OAR","LDJ","LPB","ELYA","LBG","OJJ","JM","SGEA")
@@ -40,7 +40,7 @@ plotMee <- NA # do not highlight any particular observer code
 #plotMee <- "HJW" # observer code to plot with special character
 #plotMee <- "PXR"
 #plotMee <- "HJW"
-plotMee <- "OJJ"
+plotMee <- "SDB"
 #plotMee <- "ELYA"
 #plotMee <- "CPP"
 #plotMee <- "OAR"
@@ -83,10 +83,8 @@ marsPMethod <- "backward" # set to "none" to avoid pruning
 splineRaw <-  FALSE # do the spline on the raw lightcurve, not binned.
 ############################## Comparison Stars
 okComparison <- "(000-?BLS-?556)|(000-?BLS-?551)|(000-?BLS-?553)|(000-?BLS-?552)|(000-?BLS-?554)|(000-?BLS-?549)|(BLS-549)|(BLS-555)|(000-?BLS-?555)|(108)|(113)|(116)|(118)|(121)|(124)|(128)|(ENSEMBLE)|(APASS20062365[+-]442738)" # regular expression from AAVSO photometry table
-
-######## removing obvious wild points user by user
-editUser <- data.frame(obsCode= "UJHA",startJD=2457650,endJD=2457760,band="V",stringsAsFactors=FALSE)
-editUser <- rbind(editUser,c("PXR",2457512,2457513,"V"),c("JSJA",2457646,2457647,"V"),c("SGEA",2457879,2457880,"V"))
+#
+source("observer_edits.R")
 # fill in some missing airmass values
 lasCruces <- c(32.31994,-106.763654) # center of Las Cruces, NM in decimal degrees latitude, longitude.
 Leominster <- c(52.226529,-2.741) # approximate location of PXR
